@@ -8,7 +8,7 @@ import Url exposing (Url)
 
 type alias FrontendModel =
     { key : Key
-    , message : String
+    , message : List ( String, String )
     }
 
 
@@ -35,3 +35,4 @@ type BackendMsg
 
 type ToFrontend
     = NoOpToFrontend
+    | NewMessageToFrontend String ClientId

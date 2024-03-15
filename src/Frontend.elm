@@ -28,7 +28,7 @@ app =
 init : Url.Url -> Nav.Key -> ( Model, Cmd FrontendMsg )
 init url key =
     ( { key = key
-      , message = "Welcome to Lamdera! You're looking at the auto-generated base implementation. Check out src/Frontend.elm to start coding!"
+      , message = []
       }
     , Cmd.none
     )
@@ -62,6 +62,11 @@ updateFromBackend msg model =
         NoOpToFrontend ->
             ( model, Cmd.none )
 
+        NewMessageToFrontend msgName newClientId ->
+            ( { model | message = model.message ++ [ ( msgName, newClientId ) ] }
+            , Cmd.none
+            )
+
 
 view : Model -> Browser.Document FrontendMsg
 view model =
@@ -73,7 +78,21 @@ view model =
                 [ Attr.style "font-family" "sans-serif"
                 , Attr.style "padding-top" "40px"
                 ]
-                [ Html.text model.message ]
+              <|
+                List.indexedMap displayMessage model.message
             ]
         ]
     }
+
+
+displayMessage : Int -> ( String, String ) -> Html.Html FrontendMsg
+displayMessage nb ( msgName, newClientId ) =
+    Html.div
+        [ Attr.style "display" "grid"
+        , Attr.style "grid-template-columns" "1fr 10fr 50fr"
+        , Attr.style "gap" "20px"
+        ]
+        [ Html.div [] [ Html.text (String.fromInt nb) ]
+        , Html.div [] [ Html.text msgName ]
+        , Html.div [] [ Html.text newClientId ]
+        ]

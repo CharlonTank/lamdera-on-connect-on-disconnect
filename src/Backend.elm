@@ -43,10 +43,14 @@ update msg model =
             ( model, Cmd.none )
 
         OnConnect _ clientId ->
-            ( { model | message = clientId }, Cmd.none )
+            ( { model | message = clientId }
+            , Lamdera.broadcast <| NewMessageToFrontend "OnConnect" clientId
+            )
 
         OnDisconnect _ _ ->
-            ( model, Cmd.none )
+            ( model
+            , Lamdera.broadcast <| NewMessageToFrontend "OnDisconnect" model.message
+            )
 
 
 updateFromFrontend : SessionId -> ClientId -> ToBackend -> Model -> ( Model, Cmd BackendMsg )
